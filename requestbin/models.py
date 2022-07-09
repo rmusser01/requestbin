@@ -38,11 +38,11 @@ class Bin(object):
     def dump(self):
         o = copy.copy(self.__dict__)
         o['requests'] = [r.dump() for r in self.requests]
-        return msgpack.dumps(o)
+        return msgpack.packb(o, use_bin_type=True)
 
     @staticmethod
     def load(data):
-        o = msgpack.loads(data)
+        o = msgpack.unpackb(data)
         o['requests'] = [Request.load(r) for r in o['requests']]
         b = Bin()
         b.__dict__ = o
@@ -84,7 +84,7 @@ class Request(object):
             self.path = input.path
             self.content_type = self.headers.get("Content-Type", "")
 
-            self.raw = input.environ.get('raw')
+            self.raw = self.as_string(input.environ.get('raw'))
             self.content_length = len(self.raw)
 
             # for header in self.ignore_headers:
@@ -92,7 +92,12 @@ class Request(object):
             #                         '', self.raw, flags=re.IGNORECASE)
             if self.raw and len(self.raw) > self.max_raw_size:
                 self.raw = self.raw[0:self.max_raw_size]
-
+    
+    def as_string(self, bytes):
+        try:
+            return str(bytes, "utf-16")
+        except (UnicodeDecodeError, AttributeError):
+            return "".join(chr(x) for x in bytes) #old format
 
     def to_dict(self):
         return dict(
@@ -115,16 +120,12 @@ class Request(object):
         return datetime.datetime.fromtimestamp(self.time)
 
     def dump(self):
-        return msgpack.dumps(self.__dict__)
+        return msgpack.packb(self.__dict__)
 
     @staticmethod
     def load(data):
         r = Request()
-        try:
-            r.__dict__ = msgpack.loads(data, encoding="utf-8")
-        except (UnicodeDecodeError):
-            r.__dict__ = msgpack.loads(data, encoding="ISO-8859-1")
-
+        r.__dict__ = msgpack.unpackb(data)
         return r
 
     # def __iter__(self):

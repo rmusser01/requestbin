@@ -1,8 +1,8 @@
-FROM python:2.7-alpine
+FROM python:3.9-alpine
 
 RUN apk update && apk upgrade && \
     apk add \
-        gcc python python-dev py-pip \
+        gcc g++ python3-dev libffi-dev gcc musl-dev make \
         # greenlet
         musl-dev \
         # sys/queue.h
@@ -23,6 +23,8 @@ ADD requestbin  /opt/requestbin/requestbin/
 EXPOSE 8000
 
 WORKDIR /opt/requestbin
-CMD gunicorn -b 0.0.0.0:8000 --worker-class gevent --workers 2 --max-requests 1000 requestbin:app
+
+ENV WORKERS=1
+CMD gunicorn -b 0.0.0.0:8000 --worker-class gevent --workers $WORKERS --max-requests 1000 requestbin:app
 
 
