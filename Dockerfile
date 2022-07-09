@@ -20,11 +20,13 @@ RUN pip install -r /opt/requestbin/requirements.txt \
 # the code
 ADD requestbin  /opt/requestbin/requestbin/
 
+ENV PORT=8000
 EXPOSE 8000
 
 WORKDIR /opt/requestbin
 
 ENV WORKERS=1
-CMD gunicorn -b 0.0.0.0:8000 --worker-class gevent --workers $WORKERS --max-requests 1000 requestbin:app
+
+CMD gunicorn -b 0.0.0.0:$PORT --worker-class gevent --workers $WORKERS --max-requests 1000 requestbin:app
 
 
