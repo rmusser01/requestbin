@@ -5,6 +5,9 @@
         var name = null
         if($('#custom').prop("checked") == true) {
           name = prompt("Enter a name for your bin:");
+          if (name === null) {
+              return; //break out of the function early
+          }
         }
 
         $.ajax({
