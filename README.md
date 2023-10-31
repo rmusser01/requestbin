@@ -4,20 +4,20 @@ RequestBin gives you a URL that will collect requests made to it and let you ins
 
 ## Quick start
 
-Launch your own RequestBin instance with docker
+Launch your own RequestBin instance with docker image from kingster
 
 ```
 docker run -p "8000:8000" kingster/requestbin:latest
 ```
 
-The pre-build image is available in the Docker central repository as [kingster/requestbin](https://hub.docker.com/u/kingster/requestbin).  
+Kingster pre-built image: [kingster/requestbin](https://hub.docker.com/u/kingster/requestbin).  
 
 ## Run it with persistence
 
 Clone the project from github
 
 ```
-$ git clone https://github.com/kingster/requestbin
+$ git clone https://github.com/rmusser01/requestbin
 ```
 
 From the project directory, run `docker-compose`:  
